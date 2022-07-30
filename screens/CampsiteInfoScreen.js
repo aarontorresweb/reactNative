@@ -32,7 +32,7 @@ const CampsiteInfoScreen = ({ route }) => {
                 marginHorizontal: 20,
                 paddingVertical: 20
             }}
-            ListHeaderComponent={
+            ListHeaderComponent={ 
                 <>
                     <RenderCampsite
                         campsite={campsite}
