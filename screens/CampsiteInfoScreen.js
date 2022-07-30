@@ -1,13 +1,15 @@
+import { FlatList, StyleSheet, Button, Modal, Text, View } from 'react-native';
 import { useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import RenderCampsite from '../features/campsites/RenderCampsite';
-import { COMMENTS } from '../shared/comments';
+import { toggleFavorite } from '../features/favorites/favoritesSlice';
 
 const CampsiteInfoScreen = ({ route }) => {
     const { campsite } = route.params;
-
-    const [comments, setComments] = useState(COMMENTS);
-    const [favorite, setFavorite] = useState(false);
+    const comments = useSelector((state) => state.comments);
+    const favorites = useSelector((state) => state.favorites);
+    const [showModal, setShowModal] = useState(false);
+    const dispatch = useDispatch();
 
     const renderCommentItem = ({ item }) => {
         return (
@@ -22,28 +24,46 @@ const CampsiteInfoScreen = ({ route }) => {
     };
 
     return (
-        <FlatList
-            data={comments.filter(
-                (comment) => comment.campsiteId === campsite.id
-            )}
-            renderItem={renderCommentItem}
-            keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={{
-                marginHorizontal: 20,
-                paddingVertical: 20
-            }}
-            ListHeaderComponent={ 
-                <>
-                    <RenderCampsite
-                        campsite={campsite}
-                        isFavorite={favorite}
-                        markFavorite={() => setFavorite(true)}
+        <>
+            <FlatList
+                data={comments.commentsArray.filter(
+                    (comment) => comment.campsiteId === campsite.id
+                )}
+                renderItem={renderCommentItem}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={{
+                    marginHorizontal: 20,
+                    paddingVertical: 20
+                }}
+                ListHeaderComponent={
+                    <>
+                        <RenderCampsite
+                            campsite={campsite}
+                            isFavorite={favorites.includes(campsite.id)}
+                            markFavorite={() => dispatch(toggleFavorite(campsite.id))}
+                            onShowModal={() => setShowModal(!showModal)}
+                        />
+                        <Text style={styles.commentsTitle}>Comments</Text>
+                    </>
+                }
+            />
+            <Modal
+                animationType='slide'
+                transparent={false}
+                visible={showModal}
+                onRequestClose={() => setShowModal(!showModal)}
+            >
+                <View style={{ margin: 10 }}>
+                    <Button
+                        onPress={() => setShowModal(!showModal)}
+                        color='#808080'
+                        title='Cancel'
                     />
-                    <Text style={styles.commentsTitle}>Comments</Text>
-                </>
-            }
-        />
-    );
+                </View>
+
+            </Modal>
+        </>
+        );
 };
 
 const styles = StyleSheet.create({
@@ -59,7 +79,7 @@ const styles = StyleSheet.create({
     commentItem: {
         paddingVertical: 10,
         paddingHorizontal: 20,
-        backgroundColor: '#FFF'
+        backgroundColor: '#fff'
     }
 });
 
