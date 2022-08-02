@@ -167,8 +167,8 @@ const CustomDrawerContent = (props) => (
 );
 
 const Main = () => {
-    const dispatch = useDispatch();
-
+    const dispatch = useDispatch()
+;
     useEffect(() => {
         dispatch(fetchCampsites());
         dispatch(fetchPromotions());
