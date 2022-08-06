@@ -21,6 +21,7 @@ import { fetchCampsites } from '../features/campsites/campsitesSlice';
 import { fetchPromotions } from '../features/promotions/promotionsSlice';
 import { fetchComments } from '../features/comments/commentsSlice';
 import FavoritesScreen from './FavoritesScreen';
+import * as Animatable from 'react-native-animatable';
 
 const Drawer = createDrawerNavigator();
 
