@@ -1,16 +1,48 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, PanResponder, Alert } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
 import { baseUrl } from '../../shared/baseUrl';
 import * as Animatable from 'react-native-animatable';
+import { DrawerContentScrollView } from '@react-navigation/drawer';
 
 const RenderCampsite = (props) => {
     const { campsite } = props;
+
+    const isLeftSwipe = ({ dx }) => dx - 200;
+
+    const panResponder = PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onPanResponderEnd: (e, gestureState) => {
+            console.log('Pan responder end.', gestureState);
+            if (isLeftSwipe(gestureState)) {
+                Alert.alert(
+                    'Add favorite',
+                    'Add ' + campsite.name + ' to favorites?',
+                    [
+                        {
+                            text: 'Cancel',
+                            style: 'cancel',
+                            onPress: () => console.log('Cancel Pressed')
+                        },
+                        {
+                            text: 'OK',
+                            onPress: () => props.isFavorite
+                                ? console.log('Already a favorite.')
+                                : props.markFavorite()
+                        }
+                    ],
+                    { cancelable: false }
+                );
+            }
+        }
+    });
+
     if (campsite) {
         return (
             <Animatable.View
-            animation='fadeInDownBig'
-            duration={2000}
-            delay={1000}
+                animation='fadeInDownBig'
+                duration={2000}
+                delay={1000}
+                {...panResponder.panHandlers}
             >
                 <Card containerStyle={styles.cardContainer}>
                     <Card.Image source={{ uri: baseUrl + campsite.image }}>
@@ -34,7 +66,7 @@ const RenderCampsite = (props) => {
                                     : props.markFavorite()
                             }
                         />
-                        <Icon 
+                        <Icon
                             name='pencil'
                             type='font-awesome'
                             color='#5637DD'
@@ -65,7 +97,7 @@ const styles = StyleSheet.create({
     },
     cardText: {
         textShadowColor: 'rgba(0, 0, 0, 0)',
-        textShadowOffset: { width: -1, height: 1},
+        textShadowOffset: { width: -1, height: 1 },
         textShadowRadius: 20,
         textAlign: 'center',
         color: 'white',
