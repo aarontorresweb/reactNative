@@ -6,6 +6,7 @@ import {
     StyleSheet,
     Switch,
     Button,
+    Modal,
     Alert,
     PanResponder
 } from 'react-native';
@@ -18,6 +19,7 @@ const ReservationScreen = () => {
     const [hikeIn, setHikeIn] = useState(false);
     const [date, setDate] = useState(new Date());
     const [showCalendar, setShowCalendar] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     const onDateChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -29,19 +31,10 @@ const ReservationScreen = () => {
         console.log('campers:', campers);
         console.log('hikeIn:', hikeIn);
         console.log('date:', date);
-        const title = "Begin Search?";
-        const message = "Number of campers: " + campers + "\n\nhike-in: " + hikeIn + "Date: " + date.toLocaleDateString('en-US');
-        const buttons = [
-            {
-                text: 'Cancel',
-                onPress: () => resetForm(),
-                style: 'cancel'
-            },
-            {
-                text: 'OK',
-                onPress: () => resetForm(),
-            }
-        ];
+        setShowModal(!showModal);
+        const title = "Alert";
+        const message = "This is an alert.";
+        const buttons = [];
         const options = {};
         Alert.alert(title, message, buttons, options);
     };
@@ -110,6 +103,35 @@ const ReservationScreen = () => {
                         accessibilityLabel='Tap me to search for available campsites to reserve'
                     />
                 </View>
+                <Modal
+                    animationType='slide'
+                    transparent={false}
+                    visible={showModal}
+                    onRequestClose={() => setShowModal(!showModal)}
+                >
+                    <View style={styles.modal}>
+                        <Text style={styles.modalTitle}>
+                            Search Campsite Reservations
+                        </Text>
+                        <Text style={styles.modalText}>
+                            Number of Campers: {campers}
+                        </Text>
+                        <Text style={styles.modalText}>
+                            Hike-In?: {hikeIn ? 'Yes' : 'No'}
+                        </Text>
+                        <Text style={styles.modalText}>
+                            Date: {date.toLocaleDateString('en-US')}
+                        </Text>
+                        <Button
+                            onPress={() => {
+                                setShowModal(!showModal);
+                                resetForm();
+                            }}
+                            color='#5637DD'
+                            title='Close'
+                        />
+                    </View>
+                </Modal>
             </Animatable.View>
         </ScrollView>
     );
@@ -129,6 +151,22 @@ const styles = StyleSheet.create({
     },
     formItem: {
         flex: 1
+    },
+    modal: {
+        justifyContent: 'center',
+        margin: 20
+    },
+    modalTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        backgroundColor: '#5637DD',
+        textAlign: 'center',
+        color: '#fff',
+        marginBottom: 20
+    },
+    modalText: {
+        fontSize: 18,
+        margin: 10
     }
 });
 

@@ -131,7 +131,6 @@ const CampsiteInfoScreen = ({ route }) => {
                             title='Cancel'
                         />
                     </View>
-
                 </Modal>
             </Animatable.View>
         </>
