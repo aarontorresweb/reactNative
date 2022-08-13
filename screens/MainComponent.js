@@ -238,8 +238,8 @@ const Main = () => {
                 drawerStyle={{ backgroundColor: '#CEC8FF' }}
             >
                 <Drawer.Screen
-                    name='Sign-In'
-                    component={HomeNavigator}
+                    name='Login'
+                    component={LoginNavigator}
                     options={{
                         drawerIcon: ({ color }) => (
                             <Icon

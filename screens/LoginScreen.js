@@ -15,7 +15,7 @@ const LoginScreen = () => {
 
         if(remember) {
             SecureStore.setItemAsync(
-                'use rInfo',
+                'userInfo',
                 JSON.stringify({
                     username,
                     password
@@ -31,7 +31,7 @@ const LoginScreen = () => {
     useEffect(() => {
         SecureStore.getItemAsync('userinfo').then((userdata) => {
             const userInfo = JSON.parse(userdata);
-            if (userinfo) {
+            if (userInfo) {
                 setUsername(userInfo.username);
                 setPassword(userInfo.password);
                 setRemember(true);
@@ -46,15 +46,15 @@ const LoginScreen = () => {
                 leftIcon={{ type: 'font-awesome', name: 'user-o'}}
                 onChangeText={(text) => setUsername(text)}
                 value={username}
-                containerStyle={style.formInput}
+                containerStyle={styles.formInput}
                 leftIconContainerStyle={styles.formIcon}
             />
             <Input 
                 placeholder='Password'
-                leftIcon={{ type: 'font-awesome', name: 'key'}}
+                leftIcon={{ type: 'font-awesome', name: 'key' }}
                 onChangeText={(text) => setPassword(text)}
                 value={password}
-                containerStyle={style.formInput}
+                containerStyle={styles.formInput}
                 leftIconContainerStyle={styles.formIcon}
             />
             <CheckBox 
@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
     }, 
     formInput: {
         margin: 10,
-        backgroundColor: null
     }, 
     formCheckbox: {
         margin: 10,
