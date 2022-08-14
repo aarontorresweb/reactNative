@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as ImagePicker from 'expo-image-picker';
 import { baseUrl } from '../shared/baseUrl';
 import logo from '../assets/images/logo.png';
-
+import * as ImageManipulator from 'expo-image-manipulator';
 
 const LoginTab = ({ navigation }) => {
     const [username, setUsername] = useState('');
@@ -140,24 +140,51 @@ const RegisterTab = () => {
     };
 
     const getImageFromCamera = async () => {
-        const cameraPermission = 
-            await ImagePicker.requestCameraPermissionsAsync();
+        const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
         if (cameraPermission.status === 'granted') {
             const capturedImage = await ImagePicker.launchCameraAsync({
                 allowsEditing: true,
                 aspect: [1, 1]
             });
-            if(!capturedImage.cancelled) {
+            if (!capturedImage.cancelled) {
                 console.log(capturedImage);
-                setImageUrl(capturedImage.uri);
+                processImage(capturedImage.uri)
+                // setImageUrl(capturedImage.uri);
             }
         }
     }
 
+    const getImageFromGallery = async () => {
+        const mediaLibraryPermissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (mediaLibraryPermissions.status === 'granted') {
+            const capturedImage = await ImagePicker.launchImageLibraryAsync({
+                allowsEditing: true,
+                aspect: [1, 1]
+            });
+            if (!capturedImage.cancelled) {
+                console.log(capturedImage);
+                processImage(capturedImage.uri)
+            }
+        }
+    }
+
+    const processImage = async (imageUri) => {
+        const processedImage =
+            await ImageManipulator.manipulateAsync(
+                imageUri,
+                [
+                    { resize: { width: 400 } }
+                ],
+                { format: ImageManipulator.SaveFormat.PNG }
+            );
+        console.log(processedImage)
+        setImageUrl(processedImage.uri)
+    }
+
     return (
         <ScrollView>
-            <View style={StyleSheet.container}>
-                <View styles={styles.imageContainer}>
+            <View style={styles.container}>
+                <View style={styles.imageContainer}>
                     <Image
                         source={{ uri: imageUrl }}
                         loadingIndicatorSource={logo}
@@ -166,6 +193,10 @@ const RegisterTab = () => {
                     <Button
                         title='Camera'
                         onPress={getImageFromCamera}
+                    />
+                    <Button
+                        title='Gallery'
+                        onPress={getImageFromGallery}
                     />
                 </View>
                 <Input
@@ -311,7 +342,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-evenly',
-        margin: 10
+        margin: 10,
     },
     image: {
         width: 60,
